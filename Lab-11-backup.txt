@@ -1,0 +1,310 @@
+﻿Alright sir — here’s a clean, complete guide to finish Lab 11, 12, and 13 together (no confusion, no
+repetition).
+👉 You’ll use ONE setup (Maven only) and reuse it smartly.
+
+🚀 OVERALL PLAN
+👉 You will create ONE base project
+👉 Then slightly modify it for each lab
+
+🔧 COMMON SETUP (DO THIS ONCE)
+
+✅ Step 1: Create Project
+Bash
+
+mvn archetype:generate
+
+Enter:
+GroupId: com.devops.lab
+
+ArtifactId: devops-labs
+
+Bash
+
+cd devops-labs
+
+✅ Step 2: Add Java Code
+Calculator.java
+
+Java
+
+package com.devops.lab;
+
+public class Calculator {
+
+    public int add(int a, int b) {
+
+        return a + b;
+
+    }
+
+    public int multiply(int a, int b) {
+
+        return a * b;
+
+    }
+
+}
+
+CalculatorTest.java
+
+Java
+
+package com.devops.lab;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class CalculatorTest {
+
+    Calculator calculator = new Calculator();
+
+    @Test
+
+    void testAdd() {
+
+
+        assertEquals(10, calculator.add(5,5));
+
+    }
+
+    @Test
+
+    void testMultiply() {
+
+        assertEquals(20, calculator.multiply(4,5));
+
+    }
+
+}
+
+✅ Step 3: Fix pom.xml
+Make sure you have:
+
+JUnit
+Surefire plugin
+
+(Use what we fixed earlier)
+
+✅ Step 4: Test Locally
+Bash
+
+mvn clean test
+
+✅ Step 5: Push to GitHub
+Bash
+
+git init
+
+git add .
+
+git commit -m "DevOps Labs"
+
+git remote add origin <repo-url>
+
+git push -u origin main
+
+🔥 NOW DO EACH LAB
+
+🧪 LAB 11 (FULL PIPELINE)
+
+🎯 Goal:
+Build + Test + Report
+
+📜 Jenkinsfile (Lab 11)
+groovy
+
+pipeline {
+
+    agent any
+
+    tools {
+
+        jdk 'JDK17'
+
+        maven 'Maven3'
+
+    }
+
+    stages {
+
+        stage('Build') {
+
+            steps {
+
+                sh 'mvn clean compile'
+
+            }
+
+        }
+
+        stage('Test') {
+
+            steps {
+
+                sh 'mvn test'
+
+            }
+
+        }
+
+    }
+
+    post {
+
+        always {
+
+            junit '**/target/surefire-reports/*.xml'
+
+        }
+
+    }
+
+}
+
+▶️ Run
+Create Jenkins job
+Build Now
+
+✅ Output
+✔ Build success
+✔ Tests pass
+✔ Reports visible
+
+🧪 LAB 12 (TEST ONLY)
+
+🎯 Goal:
+Run tests only (Maven)
+
+📜 Jenkinsfile (Lab 12)
+groovy
+
+pipeline {
+
+    agent any
+
+    tools {
+
+        jdk 'JDK17'
+
+        maven 'Maven3'
+
+    }
+
+    stages {
+
+        stage('Build & Test') {
+
+            steps {
+
+                sh 'mvn clean test'
+
+            }
+
+        }
+
+    }
+
+    post {
+
+        always {
+
+            junit '**/target/surefire-reports/*.xml'
+
+        }
+
+    }
+
+}
+
+▶️ Run
+New Jenkins job → Lab-12
+Build Now
+
+✅ Output
+✔ Tests run
+✔ Reports generated
+
+🧪 LAB 13 (SIMPLE INTEGRATION)
+
+🎯 Goal:
+Just integrate JUnit with Jenkins
+
+📜 Jenkinsfile (Lab 13)
+👉 SAME as Lab 12 (yes)
+
+groovy
+
+pipeline {
+
+    agent any
+
+    tools {
+
+        jdk 'JDK17'
+
+        maven 'Maven3'
+
+    }
+
+    stages {
+
+        stage('Test') {
+
+            steps {
+
+                sh 'mvn clean test'
+
+            }
+
+        }
+
+    }
+
+    post {
+
+        always {
+            junit '**/target/surefire-reports/*.xml'
+
+        }
+
+    }
+
+}
+
+▶️ Run
+New Jenkins job → Lab-13
+Build Now
+
+✅ Output
+✔ Test execution
+✔ Reports
+✔ CI validation
+
+❌ FAILURE TEST (DO FOR ALL LABS)
+Change:
+
+Java
+
+return a + b + 1;
+
+👉 Push → Run pipeline
+✔ Build FAILS
+✔ Shows CI working
+
+🧠 FINAL DIFFERENCE (REMEMBER THIS)
+Lab Pipeline
+
+11 Build + Test
+12 Test only
+13 Test only (simpler)
+
+🔥 IMPORTANT WINDOWS FIX
+If error:
+sh not found
+
+👉 Replace:
+
+groovy
+
+sh 'mvn clean test'
