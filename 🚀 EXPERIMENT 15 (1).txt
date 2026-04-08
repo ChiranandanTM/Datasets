@@ -1,0 +1,33 @@
+EXPERIMENT 15 — DOCKER BASICS (STEP BY STEP)
+STEP 1: Verify Docker Installation
+docker --version
+
+Expected:
+
+Docker version XX.X.X
+STEP 2: Run First Container
+docker run hello-world
+
+STEP 3: Check Containers
+docker ps
+docker ps -a
+
+All containers (even stopped)
+
+STEP 4: Run Web Server (IMPORTANT)
+docker pull nginx
+docker run -d -p 8080:80 nginx
+
+Open browser:
+
+http://localhost:8080
+
+STEP 5: Manage Containers
+docker ps
+
+Copy container ID, then:
+
+docker stop <container_id>
+docker rm <container_id>
+
+

@@ -1,0 +1,37 @@
+Exp-19
+step 1: create Dockerfile
+
+FROM eclipse-temurin:17-jdk
+WORKDIR /app
+COPY . /app
+RUN javac Grade.java
+CMD ["java", "Grade"]
+
+step 2: create Grade.java
+
+public class Grade {
+public static void main(String[] args) {
+System.out.println("Hello from Docker + Jenkins!");
+}
+}
+
+step 3: create Jenkinsfile
+
+pipeline {
+agent any
+stages {
+stage('Build') {
+steps {
+
+bat 'docker build -t my-app .'
+}
+}
+stage('Run') {
+steps {
+bat 'docker run -d my-app'
+}
+}
+}
+}
+
+

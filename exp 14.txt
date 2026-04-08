@@ -1,0 +1,180 @@
+Step 1:- mvn archetype:generate
+Step 2: Create a Maven Project
+In IntelliJ / Eclipse:
+•
+
+Create New Project → Maven
+
+•
+
+Set:
+o
+
+GroupId: com.example
+
+o
+
+ArtifactId: calculator
+
+Step 3: Create Calculator Class
+src/main/java/ Calculator.java
+
+package com.example;
+
+public class Calculator {
+
+public int add(int a, int b) {
+return a + b;
+}
+
+public int subtract(int a, int b) {
+return a - b;
+}
+
+public int multiply(int a, int b) {
+return a * b;
+}
+
+public int divide(int a, int b) {
+if (b == 0) {
+throw new ArithmeticException("Division by zero is not allowed.");
+}
+return a / b;
+}
+}
+
+src/test/java/ CalculatorTest.java
+
+package com.example;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+
+class CalculatorTest {
+
+Calculator cal = new Calculator();
+
+@Test
+public void testAdd() {
+assertEquals(5, cal.add(2, 3));
+
+}
+
+@Test
+public void testSubtract() {
+assertEquals(3, cal.subtract(5, 2));
+}
+
+@Test
+public void testMultiply() {
+assertEquals(20, cal.multiply(4, 5));
+}
+
+@Test
+public void testDivide() {
+assertEquals(5, cal.divide(10, 2));
+}
+
+@Test
+void testDivisionByZero() {
+assertThrows(ArithmeticException.class, () -> {
+cal.divide(10, 0);
+});
+}
+}
+
+POM.XML
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+<modelVersion>4.0.0</modelVersion>
+
+<groupId>com.example</groupId>
+<artifactId>calculator</artifactId>
+<version>1.0-SNAPSHOT</version>
+
+<name>calculator</name>
+
+<properties>
+<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+<maven.compiler.release>17</maven.compiler.release>
+</properties>
+
+<!-- JUnit 5 Dependencies -->
+<dependencies>
+
+<dependency>
+<groupId>org.junit.jupiter</groupId>
+<artifactId>junit-jupiter</artifactId>
+<version>5.11.0</version>
+<scope>test</scope>
+</dependency>
+</dependencies>
+
+<build>
+<plugins>
+
+<!-- Compiler Plugin -->
+<plugin>
+<artifactId>maven-compiler-plugin</artifactId>
+<version>3.13.0</version>
+</plugin>
+
+<!-- Surefire Plugin (Required for JUnit 5) -->
+<plugin>
+<groupId>org.apache.maven.plugins</groupId>
+<artifactId>maven-surefire-plugin</artifactId>
+<version>3.0.0</version>
+</plugin>
+
+<!-- JaCoCo Plugin -->
+
+<plugin>
+<groupId>org.jacoco</groupId>
+<artifactId>jacoco-maven-plugin</artifactId>
+<version>0.8.11</version>
+
+<executions>
+
+<!-- Attach JaCoCo agent -->
+<execution>
+<goals>
+<goal>prepare-agent</goal>
+</goals>
+</execution>
+
+<!-- Generate coverage report -->
+<execution>
+<id>report</id>
+<phase>verify</phase>
+<goals>
+<goal>report</goal>
+</goals>
+</execution>
+
+</executions>
+</plugin>
+
+</plugins>
+</build>
+
+</project>
+
+Step 4: mvn clean test
+Step 5: mvn jacoco:report
+
+Step 6: Final Expected Output
+
+├── jacoco.exec
+├── site/
+│ └── jacoco/
+│ ├── index.html
+│ ├── classes.html
+│ └── resources/
+
+

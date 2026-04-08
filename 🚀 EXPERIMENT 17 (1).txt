@@ -1,0 +1,68 @@
+EXPERIMENT 17 — FULL GUIDE
+PART A: Port Mapping
+Step 1: Run container WITHOUT port mapping
+docker run -d nginx
+
+Step 2: Run WITH port mapping
+docker run -d -p 8082:80 nginx
+
+Open browser:
+
+http://localhost:8082
+
+You will see Nginx page
+
+PART B: Docker Volumes (Persistence)
+Step 1: Create volume
+docker volume create myvolume
+
+Check:
+
+docker volume ls
+Step 2: Run container with volume
+docker run -it -v myvolume:/data ubuntu bash
+Step 3: Create file inside container
+
+Inside container:
+
+cd /data
+echo "Docker Volume Persistence Test" > test.txt
+exit
+Step 4: Check persistence
+
+Run again:
+
+docker run -it -v myvolume:/data ubuntu bash
+
+Check:
+
+cat /data/test.txt
+
+Output:
+
+Docker Volume Persistence Test
+
+Data is saved even after container exit
+
+PART C: Volume + Port Mapping Together
+Step 1: Run nginx with volume + port
+docker run -d -p 8083:80 -v myvolume:/usr/share/nginx/html nginx
+Step 2: Add HTML file
+docker run -it -v myvolume:/data ubuntu bash
+
+Inside:
+
+echo "<h1>Persistent Web Page</h1>" > /data/index.html
+exit
+Step 3: Open browser
+http://localhost:8083
+
+Output:
+
+Persistent Web Page
+Verification Commands
+docker ps
+docker volume ls
+docker volume inspect myvolume
+
+
