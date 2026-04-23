@@ -1,0 +1,508 @@
+﻿DevOps Lab Programs
+Experiments 1 - 9
+Git, GitHub, Jenkins & Apache Maven
+
+
+Experiment 1: Introduction to Git and Local Repository Management
+Aim
+To understand the basics of Git and to learn how to create and manage a local Git repository by performing fundamental operations such as initializing a repository, adding files, committing changes, and viewing commit history.
+Theory
+Git is a distributed version control system used to track changes in source code and files during software development. It allows developers to maintain multiple versions of a project, collaborate efficiently, and revert to previous states if required.
+The basic workflow of Git consists of three main stages:
+• Working Directory - where files are created, modified, or deleted.
+• Staging Area (Index) - temporarily holds files marked for the next commit.
+• Repository (Commit History) - permanently stores snapshots of the project as commits.
+Steps & Commands
+Step 1: Create a Folder and Initialize Repository
+mkdir Git_Lab_Experiment1
+cd Git_Lab_Experiment1
+git init
+Step 2: List Files (Including Hidden)
+ls
+ls -a
+Step 3: Configure Git (First-Time Setup)
+git config --global user.name "Your Name"
+git config --global user.email your_email@example.com
+Step 4: Create a File
+echo "This is my first Git experiment" > README.txt
+Step 5: Check File Status
+git status
+Step 6: Add Files to Staging Area
+git add README.txt
+# OR to add all files:
+git add .
+Step 7: Commit the Files
+git commit -m "Initial commit"
+Step 8: Modify the File and Commit Again
+echo "Git tracks file changes" >> README.txt
+git status
+git add README.txt
+git commit -m "Updated README file"
+Step 9: View Commit History
+git log
+Result
+A local Git repository was successfully initialized, files were added to the staging area, committed, and the commit history was verified using git log.
+
+
+
+Experiment 2: Working with Git Branches
+Aim
+To understand Git branching and learn how parallel development is managed using branches - creating feature branches, committing changes, merging branches, and resolving conflicts.
+Theory
+A branch in Git represents an independent line of development. By default, every Git repository starts with a main branch (master/main). Changes in a new branch are isolated from other branches until they are merged.
+Steps & Commands
+Step 1: Create a folder and Initialize Repository
+bash
+mkdir Git_Experiment2
+cd Git_Experiment2
+git init
+
+Step 2: Make First Commit on Master (IMPORTANT)
+bash
+echo "File created in master" > file1.txt
+git add .
+git commit -m "Initial commit in master"
+
+Step 3: Check Current Branch
+bash
+git branch
+Output: * master
+
+Step 4: Create and Switch to Feature Branch
+bash
+git branch feature-branch
+git checkout feature-branch
+Or in one step:
+bash
+git checkout -b feature-branch
+
+Step 5: Make Changes in Feature Branch
+bash
+echo "Changes from feature branch" >> file1.txt
+git status
+git add .
+git commit -m "Added new feature in feature branch"
+
+Step 6: Switch Back to Master and Make Different Changes
+bash
+git checkout master
+echo "Changes from master branch" >> file1.txt
+git add .
+git commit -m "Updated file in main branch"
+
+Step 7: Merge Feature Branch into Master (Conflict will occur)
+bash
+git merge feature-branch
+Output will show:
+CONFLICT (content): Merge conflict in file1.txt
+Automatic merge failed; fix conflicts and then commit the result.
+
+Step 8: Resolve the Conflict
+Open file1.txt - it will look like this:
+File created in master
+<<<<<<< HEAD
+Changes from master branch
+=======
+Changes from feature branch
+>>>>>>> feature-branch
+Edit the file and keep what you want, for example:
+File created in master
+Changes from master branch
+Changes from feature branch
+Then save the file and complete the merge:
+bash
+git add file1.txt
+git commit -m "Merge conflict resolved"
+
+Step 9: Verify Merge History
+bash
+git log --oneline
+Output:
+abc1234 Merge conflict resolved
+def5678 Updated file in main branch
+987fedc Added new feature in feature branch
+123abcd Initial commit in master
+
+Step 10: Delete Feature Branch
+bash
+git branch -d feature-branch
+Result
+Git branches were successfully created, merged, and conflicts were resolved. This experiment demonstrates how parallel development is managed using Git branches.
+
+
+
+Experiment 3: GitHub Repository Creation and Push
+Aim
+To understand remote repository management using GitHub by creating a GitHub repository and performing operations such as pushing local code, pulling updates from the remote repository, and cloning a repository.
+Theory
+GitHub is a remote repository hosting platform. While Git manages versions locally, GitHub stores repositories on a remote server. Key operations:
+• Push (git push) - Transfers commits from local to remote repository.
+• Pull (git pull) - Fetches changes from remote and merges into local.
+• Clone (git clone) - Creates a local copy of a remote repository.
+• Remote (origin) - Default name for the remote GitHub repository URL.
+Steps & Commands
+Step 1: Setup Git Global Configuration
+git config --global user.name "Your Name"
+git config --global user.email "your_email@example.com"
+Step 2: Sign in to GitHub and Create Repository
+Go to https://github.com → Sign in → Click New Repository → Name it git-lab-demo → Keep it Public → Click Create Repository.
+Step 3: Clone the Repository
+cd Desktop
+git clone https://github.com/YourUsername/git-lab-demo.git
+cd git-lab-demo
+Step 4: Add a Remote (If Not Cloned)
+git init
+git remote add origin https://github.com/YourUsername/git-lab-demo.git
+git pull origin main
+Step 5: Add a Local File and Push
+# Create main.py:
+print("This file is from local machine.")
+
+git add main.py
+git commit -m "Add main.py file"
+# First-time push:
+git push -u origin main
+# Subsequent pushes:
+git push origin main
+Step 6: Fetch and Pull Updates
+# Make a change on GitHub (e.g., edit README.md online), then:
+git fetch origin
+git merge origin/main
+# OR simply:
+git pull origin main
+Result
+A GitHub repository was successfully created, local code was pushed, and updates were fetched and pulled from the remote repository.
+
+
+
+Experiment 4: GitHub Collaboration Using Pull Requests
+Aim
+To understand and implement team-based software development using GitHub by forking a repository, creating a feature branch, making changes, raising a pull request, reviewing changes, and merging them into the main branch.
+Theory
+A Pull Request (PR) is a request to merge changes from a feature branch into the master/main branch. It enables code review, discussion, and verification before changes are merged. Pull requests prevent direct changes to the master branch and improve code quality.
+Steps & Commands
+Step 1: Create a Repository on GitHub
+Login to GitHub → Click New Repository → Name it Git_PullRequests → Select Public → Check Add README.md → Click Create Repository.
+Step 2: Clone Repository to Local System
+git clone <repository-url>
+cd Git_PullRequests
+Step 3: Create Files in Master Branch
+touch file1.txt
+echo "This file is created in master branch" > file1.txt
+git status
+git add file1.txt
+git commit -m "Initial commit in master"
+Step 4: Push Changes to Main
+git push origin main
+Step 5: Pull Latest Changes
+git pull origin main
+Step 6: Create Feature Branch
+git branch feature-1
+git checkout feature-1
+Step 7: Modify Files in Feature Branch
+echo "This change is from feature-1 branch" >> file1.txt
+touch feature.txt
+echo "Feature branch file" > feature.txt
+git status
+git add .
+git commit -m "Changes done in feature-1"
+Step 8: Push Feature Branch to GitHub
+git push origin feature-1
+Step 9: Create Pull Request (GitHub UI)
+Open GitHub repository → Click Compare & Pull Request → Set Base branch to master, Compare branch to feature-1 → Add description → Click Create Pull Request.
+Step 10 & 11: Review and Merge Pull Request
+Reviewer checks code → Approves changes → Click Merge Pull Request → Confirm merge.
+Step 12: Update Local Master After Merge
+git checkout master
+git pull origin master
+Step 13: Verify Commit History
+git log --oneline
+Step 14: Delete Feature Branch
+# Local:
+git branch -d feature-1
+# Remote:
+git push origin --delete feature-1
+Result
+A pull request was successfully created, reviewed, and merged using GitHub. This experiment demonstrates collaborative development workflows using branches and pull requests.
+
+
+
+Experiment 5: Git Tagging and Release Creation
+Aim
+To understand release management in Git by creating annotated tags, pushing tags to a remote repository, and creating releases on GitHub.
+Theory
+A Git tag is a reference pointing to a specific commit, used to mark important milestones like software releases. There are two types:
+• Lightweight tags - Simple references to a commit.
+• Annotated tags - Full objects storing metadata (tag name, author, date, message). Recommended for release management.
+Steps & Commands
+Step 1: Pull Latest Changes
+git pull
+Step 2: Create a Lightweight Tag
+git tag v1.0
+Step 3: List All Tags
+git tag
+Step 4: Create an Annotated Tag
+git tag -a v1.2 -m "v1.2 Tag Created"
+Step 5: View Tag Details
+git show v1.0
+Step 6: List Tags with Pattern
+git tag -l "v1.*"
+Step 7: Push a Specific Tag to Remote
+git push origin v1.0
+Step 8: Create Another Tag and Push All at Once
+git tag v2.0
+git push --tags
+Step 9: Delete Tags
+# Delete locally:
+git tag -d v1.0
+# Delete remotely:
+git push origin -d v1.0
+Result
+Git tags were successfully created, pushed to the remote repository, and deleted. GitHub releases can be created from these tags via the GitHub UI under the Releases section.
+
+
+
+Experiment 6: Jenkins Installation and Configuration
+Aim
+To install, configure, and verify Jenkins - an open-source automation server used for Continuous Integration (CI) and Continuous Delivery (CD).
+Theory
+Jenkins automates the process of building, testing, and deploying applications whenever changes are made to the source code. It is Java-based and requires JDK 8 or JDK 11.
+Steps
+Step 1: Verify Java Installation
+java -version
+Step 2: Install Jenkins
+# On Ubuntu/Debian Linux:
+sudo apt install jenkins
+
+# On Windows: Run the downloaded .msi installer from https://www.jenkins.io
+Step 3: Start Jenkins Service
+# Linux:
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+
+# Windows: Jenkins starts automatically after installation
+Step 4: Access Jenkins Web Interface
+# Open browser and go to:
+http://localhost:8080
+Step 5: Unlock Jenkins
+# Linux - get initial admin password:
+cat /var/lib/jenkins/secrets/initialAdminPassword
+
+# Windows: Check the Jenkins installation directory for the same file
+Step 6: Install Suggested Plugins
+Select 'Install suggested plugins' - Jenkins automatically installs essential plugins for CI/CD.
+Step 7: Create Admin User
+Enter admin user details (username, password, email) → Save and continue.
+Step 8: Configure Jenkins Environment
+Set the Jenkins URL → Configure global tools (JDK, Git, Maven if needed) → Save configuration.
+Step 9: Create and Run a Sample Job
+Click New Item → Enter job name → Select Freestyle Project → Configure source code management → Add build steps → Save → Click Build Now → Check Console Output.
+Step 10: Stop Jenkins (Optional)
+# Linux:
+sudo systemctl stop jenkins
+
+# Windows: Stop Jenkins from Services panel
+Result
+Jenkins was successfully installed, configured, and verified by executing a sample build job.
+
+
+
+Experiment 7: Jenkins Freestyle Job
+Aim
+To create and execute a basic Jenkins freestyle job by configuring build settings and running a simple build command in order to understand automated build execution in Jenkins.
+Theory
+A Jenkins freestyle job is the simplest type of job. It allows users to configure build tasks through a graphical interface without complex scripts. In this experiment, Jenkins executes a Windows batch command and displays output in the console.
+Steps
+Step 1: Access Jenkins
+# Open browser:
+http://localhost:8080
+# Login with username: jenkins, password: jenkins
+Step 2: Create a New Freestyle Job
+Click New Item → Enter item name (e.g., sample_job) → Select Freestyle project → Click OK.
+Step 3: Configure the Job
+Give a Description (e.g., Sample Free Style Job) → Enable Discard old builds → Set days to keep builds and max builds to keep.
+Step 4: Add Build Step
+In Build Steps → Click Add build step → Select Execute Windows Batch Command → Enter the following command:
+echo "Hi, Welcome to Jenkins."
+Step 5: Save and Build
+Click Save → Click Build Now → After build completes, click Console Output.
+Expected Console Output
+Started by user ...
+Running as SYSTEM
+echo "Hi, Welcome to Jenkins."
+Hi, Welcome to Jenkins.
+Finished: SUCCESS
+Result
+A Jenkins freestyle job was successfully created and executed. The console output confirmed the build ran successfully.
+
+
+
+Experiment 8: Jenkins Build Triggers
+Aim
+To understand and configure Jenkins build automation by enabling build triggers such as SCM polling and GitHub webhooks in order to automatically trigger builds when changes occur in the source code repository.
+Theory
+Two important Jenkins build triggers:
+• SCM Polling - Jenkins periodically checks the repository for changes and triggers a build if changes are detected. Useful when webhooks are unavailable.
+• GitHub Webhook - GitHub sends a real-time notification to Jenkins when code changes occur (push/commit), immediately triggering a build. More efficient than polling.
+BankService.java Code
+Create this file and add it to your GitHub repository (Github_Bankservice):
+public class BankService {
+    static class BankAccount {
+        private double balance;
+
+        public BankAccount(double initialBalance) {
+            if (initialBalance < 0)
+                throw new IllegalArgumentException("Initial balance cannot be negative");
+            this.balance = initialBalance;
+        }
+
+        public void deposit(double amount) {
+            if (amount <= 0)
+                throw new IllegalArgumentException("Deposit must be positive");
+            balance += amount;
+        }
+
+        public void withdraw(double amount) {
+            if (amount <= 0 || amount > balance)
+                throw new IllegalArgumentException("Invalid withdrawal");
+            balance -= amount;
+        }
+
+        public double getBalance() {
+            return balance;
+        }
+    }
+
+    public static void main(String[] args) {
+        BankAccount acc = new BankAccount(5000);
+        System.out.println("Initial Balance: " + acc.getBalance());
+        acc.deposit(700);
+        System.out.println("Balance after deposit: " + acc.getBalance());
+        acc.withdraw(100);
+        System.out.println("Balance after withdrawal: " + acc.getBalance());
+        System.out.println("Final Balance: " + acc.getBalance());
+    }
+}
+Steps
+Step 1: Create GitHub Repository
+Create a new repository named Github_Bankservice on GitHub. Add BankService.java to it.
+Step 2: Create Jenkins Job
+In Jenkins → Click New Item → Enter name GitHub_BankApplication → Select Freestyle Project → Click OK → Enter Description.
+Step 3: Configure Source Code Management
+Select Git → Enter Repository URL (e.g., https://github.com/username/Github_Bankservice) → Add Credentials (GitHub username and password/token) → Set Branch Specifier to */main or */master.
+Step 4: Configure Build Triggers
+In Triggers section: Check 'GitHub hook trigger for GITScm polling' AND 'Poll SCM' → In Schedule enter:
+* * * * *
+(This polls every minute. In production, use H/5 * * * * to poll every 5 minutes.)
+Step 5: Add Build Step
+Add build step → Select Execute Windows Batch Command → Enter:
+javac BankService.java
+java BankService
+Step 6: Save and Build
+# Click Save → Click Build Now → Click Console Output
+Step 7: Test Automatic Trigger
+Make a change to BankService.java on GitHub (e.g., change deposit amount). Return to Jenkins Status section - a new build will start automatically because of the configured trigger.
+Result
+SCM polling and GitHub webhook triggers were configured successfully. Jenkins automatically triggered a build when the source code was modified in the GitHub repository.
+
+
+
+Experiment 9: Creation and Build of a Java Project Using Apache Maven
+Aim
+To understand Apache Maven by creating a Java project using Maven archetypes, building the project using Maven build lifecycle commands, managing dependencies, and generating project documentation.
+Theory
+Apache Maven is a build automation and project management tool for Java applications. It uses Project Object Model (POM) defined in pom.xml, which contains project information: groupId, artifactId, version, dependencies, and build configurations.
+Key concepts:
+• Maven Archetype - A project template that generates a standard directory structure.
+• groupId - Represents the organization or domain name (e.g., com.bnmit).
+• artifactId - Unique name of the application (e.g., sample-app).
+• .m2 folder - Local repository where Maven stores downloaded dependencies.
+Maven build lifecycle phases:
+• mvn package - Compiles source code and packages it into a JAR file.
+• mvn clean - Removes previously generated build files (deletes target directory).
+• mvn site - Generates project documentation, reports, and HTML pages.
+Steps & Commands
+Step 1: Verify Maven Installation
+mvn --version
+Step 2: Generate Project Using Archetype
+mvn archetype:generate
+# When prompted:
+# Choose a number or apply filter: press Enter (default 2309)
+# Choose a number: 9  (press Enter)
+# groupId: com.bnmit
+# artifactId: sample-app
+# version: 1.0-SNAPSHOT  (press Enter)
+# package: com.bnmit  (press Enter)
+# Confirm with: y
+Step 3: Navigate to Project Folder
+cd sample-app
+ls
+The generated project structure:
+sample-app/
+├── pom.xml
+└── src/
+    └── main/
+        └── java/
+            └── com/bnmit/
+                └── App.java
+Step 4: Replace App.java with BankService Code
+Navigate to sample-app → src → main → java → com → bnmit → rename App.java to BankService.java and paste:
+class BankAccount {
+    private double balance;
+
+    public BankAccount(double initialBalance) {
+        if (initialBalance < 0)
+            throw new IllegalArgumentException("Initial balance cannot be negative");
+        this.balance = initialBalance;
+    }
+
+    public void deposit(double amount) {
+        if (amount <= 0)
+            throw new IllegalArgumentException("Deposit must be positive");
+        balance += amount;
+    }
+
+    public void withdraw(double amount) {
+        if (amount <= 0 || amount > balance)
+            throw new IllegalArgumentException("Invalid withdrawal");
+        balance -= amount;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+}
+
+public class BankService {
+    public static void main(String[] args) {
+        BankAccount acc = new BankAccount(1000);
+        acc.deposit(500);
+        acc.withdraw(300);
+        System.out.println("Final Balance: " + acc.getBalance());
+    }
+}
+Step 5: Clean Previous Builds
+mvn clean
+Step 6: Build the Project (Package)
+mvn package
+This creates a target/ folder containing the compiled .class files and a JAR file.
+Step 7: Run the JAR File
+cd target
+java -cp sample-app-1.0-SNAPSHOT.jar com.bnmit.BankService
+Step 8: Generate Project Documentation
+cd ..
+mvn site
+This creates a target/site/ folder. Open target/site/index.html in a browser to view project reports and documentation.
+Expected Output
+Final Balance: 1200.0
+Maven Commands Summary
+mvn --version       # Check Maven version
+mvn archetype:generate  # Create a new project
+mvn package         # Compile and package into JAR
+mvn clean           # Delete target/ directory
+mvn site            # Generate project documentation
+mvn clean package   # Clean and rebuild
+Result
+A Java project was successfully created using Apache Maven archetypes, built using the Maven lifecycle, and the compiled application was executed. Project documentation was generated using mvn site.
+DevOps Lab Programs  |  Page 1 of 2
+
