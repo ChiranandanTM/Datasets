@@ -1,0 +1,191 @@
+Experiment 13: Integrating JUnit with Jenkins
+
+Step 1: Pre-requisites
+Make sure the following are installed:
+
+Jenkins running at http://localhost:8080
+Java JDK 17
+Apache Maven
+Git
+
+
+Step 2: Create the Maven Project
+Open command prompt:
+bashmvn archetype:generate
+# groupId: com.example
+# artifactId: calculator
+# version: 1.0-SNAPSHOT
+# press Enter for defaults, then y
+
+Step 3: Create Calculator.java
+Navigate to src/main/java/com/example/ and create Calculator.java:
+javapackage com.example;
+
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int subtract(int a, int b) {
+        return a - b;
+    }
+
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+
+    public int divide(int a, int b) {
+        if (b == 0) {
+            throw new ArithmeticException("Division by zero is not allowed.");
+        }
+        return a / b;
+    }
+}
+
+Step 4: Create CalculatorTest.java
+Navigate to src/test/java/com/example/ and create CalculatorTest.java:
+javapackage com.example;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+
+class CalculatorTest {
+    Calculator cal = new Calculator();
+
+    @Test
+    public void testAdd() {
+        assertEquals(5, cal.add(2, 3));
+    }
+
+    @Test
+    public void testSubtract() {
+        assertEquals(3, cal.subtract(5, 2));
+    }
+
+    @Test
+    public void testMultiply() {
+        assertEquals(20, cal.multiply(4, 5));
+    }
+
+    @Test
+    public void testDivide() {
+        assertEquals(5, cal.divide(10, 2));
+    }
+
+    @Test
+    void testDivisionByZero() {
+        assertThrows(ArithmeticException.class, () -> {
+            cal.divide(10, 0);
+        });
+    }
+}
+
+Step 5: Update pom.xml
+xml<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>calculator</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>calculator</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+    </properties>
+
+    <dependencies>
+        <!-- JUnit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Compiler Plugin -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+            </plugin>
+
+            <!-- Surefire Plugin (Required for JUnit 5) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+Step 6: Push Project to GitHub
+bashcd calculator
+git init
+git add .
+git commit -m "Initial commit - Calculator project"
+git remote add origin https://github.com/YourUsername/calculator.git
+git push -u origin main
+
+Step 7: Install JUnit Plugin in Jenkins
+
+Open http://localhost:8080
+Go to Manage Jenkins → Plugins → Available Plugins
+Search for JUnit Plugin
+Click Install → Restart Jenkins
+
+
+Step 8: Create Jenkins Job
+
+Click New Item
+Enter name: Calculator_JUnit
+Select Freestyle Project → Click OK
+
+
+Step 9: Configure Source Code Management
+
+Select Git
+Enter Repository URL:
+
+https://github.com/YourUsername/calculator.git
+
+Add credentials (GitHub username and password/token)
+Set Branch Specifier: */main
+
+
+Step 10: Configure Build Step
+
+In Build Steps → Click Add build step
+Select Execute Windows Batch Command
+Enter:
+
+batchmvn clean test
+
+Step 11: Configure Post-Build Action (JUnit Report)
+
+In Post-build Actions → Click Add post-build action
+Select Publish JUnit test result report
+In Test report XMLs enter:
+
+target/surefire-reports/*.xml
+
+Click Save
+
+
+Step 12: Build the Job
+
+Click Build Now
+Wait for build to complete
+Click Console Output to verify
+
+Expected Console Output:
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
